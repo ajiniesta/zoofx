@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox fx:id="parent" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ToolBar prefHeight="40.0" prefWidth="200.0">
+         <items>
+            <TextField fx:id="znodeName" />
+            <Button mnemonicParsing="false" onAction="#onSaveAction" text="Save" />
+            <Button mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
+            <Button fx:id="addKeyButton" mnemonicParsing="false" onAction="#onAddKey" text="Add Key" />
+            <Button fx:id="removeSelKeyButton" mnemonicParsing="false" onAction="#onRemoveKey" text="Remove Key" />
+         </items>
+      </ToolBar>
+      <TabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+         <tabs>
+            <Tab fx:id="textTab" text="Editor">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="editor" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab fx:id="tableTab" text="Table View">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableEditor" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <columns>
+                              <TableColumn fx:id="keyCol" prefWidth="75.0" text="Key" />
+                              <TableColumn fx:id="valCol" prefWidth="75.0" text="Value" />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </content>
+            </Tab>
+            <Tab text="Stats">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TextArea fx:id="statsTextArea" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+   </children>
+</VBox>
