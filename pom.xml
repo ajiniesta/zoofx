@@ -54,7 +54,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>com.iniesta.zoofx.App</mainClass>
+							<mainClass>com.iniesta.zoofx.ZooFX</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
