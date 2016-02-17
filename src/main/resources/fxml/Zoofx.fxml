@@ -16,6 +16,8 @@
           <items>
             <MenuItem mnemonicParsing="false" onAction="#onConnect" text="Connect ..." />
             <Menu fx:id="recentMenu" mnemonicParsing="false" text="Connect Recent" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">

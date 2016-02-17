@@ -1,8 +1,10 @@
 package com.iniesta.zoofx.views;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import com.iniesta.zoofx.conf.ZFXConf;
 import com.iniesta.zoofx.model.ZookeeperCluster;
 import com.iniesta.zoofx.services.ZKConnector;
 import com.iniesta.zoofx.zk.ZookeeperConnection;
@@ -14,9 +16,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.util.Callback;
 
 public class ZooFx {
 
@@ -34,10 +38,14 @@ public class ZooFx {
 
 	@FXML
 	private Menu recentMenu;
-	
+
 	@FXML
 	void onConnect(ActionEvent event) {
 		final String conn = Dialogs.getConnection();
+		connectToZK(conn);
+	}
+
+	private void connectToZK(final String conn) {
 		final ZKConnector connector = new ZKConnector(conn);
 		progress.progressProperty().bind(connector.progressProperty());
 		progress.visibleProperty().bind(connector.runningProperty());
@@ -48,6 +56,7 @@ public class ZooFx {
 				break;
 			case SUCCEEDED:
 				createTab(connector.getValue());
+				ZFXConf.getInstance().addSuccessfulConnection(connector.getValue());
 				break;
 			default:
 				break;
@@ -81,9 +90,35 @@ public class ZooFx {
 	void onAbout(ActionEvent event) {
 		Dialogs.about();
 	}
+	
+    @FXML
+    void onExit(ActionEvent event) {
+    	System.exit(0);
+    }
 
 	@FXML
 	void initialize() {
+		ZFXConf.getInstance().addListener(new Callback<List<String>, Void>() {
+			@Override
+			public Void call(List<String> param) {
+				fillMenus(param);
+				return null;
+			}
+		});
+		fillMenus(ZFXConf.getInstance().getLastConnections());
+	}
 
+	protected void fillMenus(List<String> param) {
+		for (String conn : param) {
+			recentMenu.getItems().add(createRecentMenuItem(conn));
+		}
+	}
+
+	private MenuItem createRecentMenuItem(String conn) {
+		MenuItem menuItem = new MenuItem(conn);
+		menuItem.setOnAction(event -> {
+			connectToZK(conn);
+		});
+		return menuItem;
 	}
 }

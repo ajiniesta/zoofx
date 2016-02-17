@@ -1,5 +1,6 @@
 package com.iniesta.zoofx;
 
+import com.iniesta.zoofx.conf.ZFXConf;
 import com.iniesta.zoofx.views.ZooFx;
 
 import javafx.application.Application;
@@ -11,6 +12,7 @@ import javafx.stage.Stage;
 public class ZooFX extends Application {
 	
 	public static void main(String[] args) {
+		ZFXConf.getInstance();
 		launch(args);
 	}
 
