@@ -6,9 +6,7 @@ import java.util.List;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.Stat;
 
-import com.iniesta.zoofx.conf.ZFXConf;
 import com.iniesta.zoofx.model.ZNodeFX;
-import com.iniesta.zoofx.zk.ZookeeperConnection;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;

@@ -8,7 +8,6 @@
    <children>
       <ToolBar prefHeight="40.0" prefWidth="200.0">
          <items>
-            <TextField fx:id="znodeName" />
             <Button mnemonicParsing="false" onAction="#onSaveAction" text="Save" />
             <Button mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
             <Button fx:id="addKeyButton" mnemonicParsing="false" onAction="#onAddKey" text="Add Key" />
