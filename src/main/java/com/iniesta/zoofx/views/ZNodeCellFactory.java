@@ -61,19 +61,32 @@ public class ZNodeCellFactory extends TreeCell<ZNodeFX> {
 		getMenuItem.setOnAction(event -> {
 			String name = getTreeItem().getValue().getName();
 			Tab tab = new Tab(name);
-			znodes.getTabs().add(tab);
-			znodes.getSelectionModel().select(tab);
-			FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/Editor.fxml"));
-			try {
-				loader.setController(new Editor(zk, getTreeItem().getValue()));
-				Parent parent = loader.load();
-				tab.setContent(parent);
-			} catch (Exception e) {
-				e.printStackTrace();
+			tab.setId(name);
+			if(!existsTab(znodes, name)){				
+				znodes.getTabs().add(tab);
+				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/Editor.fxml"));
+				try {
+					loader.setController(new Editor(zk, getTreeItem().getValue()));
+					Parent parent = loader.load();
+					tab.setContent(parent);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
+			znodes.getSelectionModel().select(tab);
 		});
 
 		allMenu.getItems().addAll(createMenuItem, getMenuItem, removeMenuItem);
+	}
+
+	private boolean existsTab(TabPane znodes, String name) {
+		boolean exists = false;
+		for (Tab tab : znodes.getTabs()) {
+			if(name.equals(tab.getId())){
+				return true;
+			}
+		}
+		return exists;
 	}
 
 	private void removeItem(ZooKeeper zk, TreeView<ZNodeFX> treeView, TreeItem<ZNodeFX> item) {
