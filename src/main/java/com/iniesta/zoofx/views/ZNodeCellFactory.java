@@ -4,6 +4,7 @@ import org.apache.zookeeper.ZooKeeper;
 
 import com.iniesta.zoofx.model.ZNodeFX;
 import com.iniesta.zoofx.services.ZKRemover;
+import com.iniesta.zoofx.services.ZNodeCreator;
 
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Worker.State;
@@ -23,15 +24,29 @@ public class ZNodeCellFactory extends TreeCell<ZNodeFX> {
 
 	private TextField textField;
 	private ContextMenu allMenu = new ContextMenu();
-	// private ContextMenu rootMenu = new ContextMenu();
 
 	public ZNodeCellFactory(final ZooKeeper zk, final TabPane znodes) {
 		MenuItem createMenuItem = new MenuItem("Create ZNode");
 		createMenuItem.setOnAction(event -> {
-			ZNodeFX znode = new ZNodeFX();
-			znode.setName("NewZNode");
-			TreeItem<ZNodeFX> item = new TreeItem<>(znode);
-			getTreeItem().getChildren().add(item);			
+			String znodeName = Dialogs.askAQuestion("Create a ZNode", "Enter a valid name for the znode", "Please, enter the name of the znode");
+			if(znodeName!=null){
+				final ZNodeCreator creator = new ZNodeCreator(zk, getTreeItem().getValue(), znodeName);
+				creator.stateProperty().addListener((ChangeListener<State>) (observable, oldValue, newValue) -> {
+					switch (newValue) {
+					case SUCCEEDED:
+						if(creator.getValue()!=null){
+							TreeItem<ZNodeFX> item = new TreeItem<>(creator.getValue());
+							getTreeItem().getChildren().add(item);
+						}
+						break;
+					case FAILED:
+						Dialogs.showError("Error adding item " + znodeName, "");
+					default:
+						break;
+					}
+				});
+				creator.start();				
+			}
 		});
 				
 		MenuItem removeMenuItem = new MenuItem("Remove ZNode");
@@ -58,9 +73,7 @@ public class ZNodeCellFactory extends TreeCell<ZNodeFX> {
 			}
 		});
 
-		allMenu.getItems().addAll(getMenuItem, removeMenuItem);
-		// rootMenu.getItems().addAll(createMenuItem, getMenuItem);
-
+		allMenu.getItems().addAll(createMenuItem, getMenuItem, removeMenuItem);
 	}
 
 	private void removeItem(ZooKeeper zk, TreeView<ZNodeFX> treeView, TreeItem<ZNodeFX> item) {

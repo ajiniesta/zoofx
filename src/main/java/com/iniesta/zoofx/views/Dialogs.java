@@ -30,10 +30,14 @@ public class Dialogs {
 	}
 	
 	public static String getConnection(){
+		return askAQuestion("Connect to ZooKeeper server", "Enter a connection string in format: host:port", "Please enter your connection:");
+	}
+
+	public static String askAQuestion(String title, String header, String content) {
 		TextInputDialog dialog = new TextInputDialog();
-		dialog.setTitle("Connect to ZooKeeper server");
-		dialog.setHeaderText("Enter a connection string in format: host:port");
-		dialog.setContentText("Please enter your connection:");
+		dialog.setTitle(title);
+		dialog.setHeaderText(header);
+		dialog.setContentText(content);
 		Optional<String> result = dialog.showAndWait();
 		if (result.isPresent()){
 		    return result.get();
