@@ -5,10 +5,13 @@ import java.util.ResourceBundle;
 
 import org.apache.zookeeper.ZooKeeper;
 
+import com.iniesta.zoofx.model.StatItem;
 import com.iniesta.zoofx.model.ZNodeFX;
 import com.iniesta.zoofx.services.ZNodeLoad;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
 import javafx.concurrent.Worker.State;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,9 +44,6 @@ public class Editor {
     private Tab tableTab;
 
     @FXML
-    private TextArea statsTextArea;
-    
-    @FXML
     private TableView<?> tableEditor;
 
     @FXML
@@ -61,6 +61,15 @@ public class Editor {
     @FXML
     private Button removeSelKeyButton;
 
+    @FXML
+    private TableView<StatItem> statTable;
+    
+    @FXML
+    private TableColumn<StatItem, String> statKeyColumn;
+    
+    @FXML
+    private TableColumn<StatItem, String> statValueColumn;
+    
 	private ZNodeFX znode;
     
 	private ZooKeeper zk;
@@ -76,11 +85,6 @@ public class Editor {
     }
 
     @FXML
-    void onCloseAction(ActionEvent event) {
-
-    }
-
-    @FXML
     void onAddKey(ActionEvent event) {
 
     }
@@ -92,15 +96,18 @@ public class Editor {
 
     @FXML
     void initialize() throws Exception {
+    	statKeyColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getItem()));
+    	statValueColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().getValue()));
     	addKeyButton.disableProperty().bind(tableTab.selectedProperty().not());
     	removeSelKeyButton.disableProperty().bind(tableTab.selectedProperty().not());
     	final ZNodeLoad loader = new ZNodeLoad(zk, znode);
     	loader.stateProperty().addListener((ChangeListener<State>) (observable, oldValue, newValue) -> {
 			if(newValue == State.SUCCEEDED){
 				editor.setText(loader.getValue().getContent());
-				statsTextArea.setText(loader.getValue().getStat().toString());
+				statTable.setItems(FXCollections.observableArrayList(StatItem.extractStatItem(loader.getValue().getStat())));
 			}
 		});
     	loader.start();
     }
+
 }

@@ -12,10 +12,10 @@
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
-        <Menu mnemonicParsing="false" text="File">
+        <Menu mnemonicParsing="false" text="Connection">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#onConnect" text="Connect ..." />
-            <Menu fx:id="recentMenu" mnemonicParsing="false" text="Connect Recent" />
+            <Menu fx:id="recentMenu" mnemonicParsing="false" text="Recent Connections" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
           </items>

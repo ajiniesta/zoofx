@@ -9,7 +9,6 @@
       <ToolBar prefHeight="40.0" prefWidth="200.0">
          <items>
             <Button mnemonicParsing="false" onAction="#onSaveAction" text="Save" />
-            <Button mnemonicParsing="false" onAction="#onCloseAction" text="Close" />
             <Button fx:id="addKeyButton" mnemonicParsing="false" onAction="#onAddKey" text="Add Key" />
             <Button fx:id="removeSelKeyButton" mnemonicParsing="false" onAction="#onRemoveKey" text="Remove Key" />
          </items>
@@ -41,9 +40,14 @@
             </Tab>
             <Tab text="Stats">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <AnchorPane>
                      <children>
-                        <TextArea fx:id="statsTextArea" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <TableView fx:id="statTable" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columns>
+                            <TableColumn fx:id="statKeyColumn" prefWidth="96.0" text="Stat" />
+                            <TableColumn fx:id="statValueColumn" maxWidth="1.7976931348623157E308" prefWidth="103.0" text="Value" />
+                          </columns>
+                        </TableView>
                      </children>
                   </AnchorPane>
               </content>
