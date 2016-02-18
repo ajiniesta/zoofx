@@ -13,7 +13,8 @@ public class Dialogs {
 		confirmation.setTitle(title);
 		confirmation.setHeaderText(header);
 		confirmation.setContentText(content);
-		return confirmation.getResult() == ButtonType.OK;
+		Optional<ButtonType> result = confirmation.showAndWait();
+		return result.get() == ButtonType.OK;		
 	}
 	
 	

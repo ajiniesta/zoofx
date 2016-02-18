@@ -3,7 +3,10 @@ package com.iniesta.zoofx.views;
 import org.apache.zookeeper.ZooKeeper;
 
 import com.iniesta.zoofx.model.ZNodeFX;
+import com.iniesta.zoofx.services.ZKRemover;
 
+import javafx.beans.value.ChangeListener;
+import javafx.concurrent.Worker.State;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ContextMenu;
@@ -30,9 +33,14 @@ public class ZNodeCellFactory extends TreeCell<ZNodeFX> {
 			TreeItem<ZNodeFX> item = new TreeItem<>(znode);
 			getTreeItem().getChildren().add(item);			
 		});
-		
+				
 		MenuItem removeMenuItem = new MenuItem("Remove ZNode");
-		removeMenuItem.setOnAction(event -> {});
+		removeMenuItem.setOnAction(event -> {
+			boolean ok = Dialogs.confirmation("Remove ZNode", "You are going to remove a ZNode", "Are you sure you want to continue?");
+			if(ok){
+				removeItem(zk, getTreeView(), getTreeItem());
+			}
+		});
 		
 		MenuItem getMenuItem = new MenuItem("Get ZNode");
 		getMenuItem.setOnAction(event -> {
@@ -50,22 +58,31 @@ public class ZNodeCellFactory extends TreeCell<ZNodeFX> {
 			}
 		});
 
-		allMenu.getItems().addAll(getMenuItem);
+		allMenu.getItems().addAll(getMenuItem, removeMenuItem);
 		// rootMenu.getItems().addAll(createMenuItem, getMenuItem);
 
 	}
 
-	private void removeItem(TreeView<ZNodeFX> treeView, TreeItem<ZNodeFX> root, TreeItem<ZNodeFX> item) {
-		if (item.getValue().getName().equals(root.getValue().getName())) {
-			if (treeView.getRoot().getValue().getName().equals(item.getValue().getName())) {
-				treeView.setRoot(null);
-			} else {
-				root.getParent().getChildren().remove(item);
-			}
-		} else if (item.getChildren() != null) {
-			for (TreeItem<ZNodeFX> kid : item.getChildren()) {
-				removeItem(treeView, kid, item);
-			}
+	private void removeItem(ZooKeeper zk, TreeView<ZNodeFX> treeView, TreeItem<ZNodeFX> item) {
+		TreeItem<ZNodeFX> parent = item.getParent();
+		if(parent!=null){
+			final ZKRemover remover = new ZKRemover(zk, item.getValue());
+			remover.stateProperty().addListener((ChangeListener<State>) (observable, oldValue, newValue) -> {
+				switch (newValue) {
+				case SUCCEEDED:
+					if(remover.getValue()){
+						parent.getChildren().remove(item);
+					}
+					break;
+				case FAILED:
+					Dialogs.showError("Error removing item " + item.getValue().getName(), "It is forbidden to remove the root item");
+				default:
+					break;
+				}
+			});
+			remover.start();
+		}else{
+			Dialogs.showError("Error removing item " + item.getValue().getName(), "It is forbidden to remove the root item");
 		}
 	}
 
