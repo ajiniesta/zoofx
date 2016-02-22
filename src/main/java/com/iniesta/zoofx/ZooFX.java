@@ -26,7 +26,7 @@ public class ZooFX extends Application {
 		stage.setScene(scene);
 		stage.setWidth(800);
 		stage.setHeight(600);
-		stage.setTitle("ZooFx");
+		stage.setTitle("ZooFX");
 		stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("fxml/images/icon.png")));
 		stage.show();
 	}
