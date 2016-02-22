@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class ZooFX extends Application {
@@ -26,6 +27,7 @@ public class ZooFX extends Application {
 		stage.setWidth(800);
 		stage.setHeight(600);
 		stage.setTitle("ZooFx");
+		stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("fxml/images/icon.png")));
 		stage.show();
 	}
 }

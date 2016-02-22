@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -8,9 +9,30 @@
    <children>
       <ToolBar prefHeight="40.0" prefWidth="200.0">
          <items>
-            <Button mnemonicParsing="false" onAction="#onSaveAction" text="Save" />
-            <Button fx:id="addKeyButton" mnemonicParsing="false" onAction="#onAddKey" text="Add Key" />
-            <Button fx:id="removeSelKeyButton" mnemonicParsing="false" onAction="#onRemoveKey" text="Remove Key" />
+            <Button mnemonicParsing="false" onAction="#onSaveAction">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/save.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="addKeyButton" mnemonicParsing="false" onAction="#onAddKey">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/math-add-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="removeSelKeyButton" mnemonicParsing="false" onAction="#onRemoveKey">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/math-minus-icon.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
          </items>
       </ToolBar>
       <TabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
