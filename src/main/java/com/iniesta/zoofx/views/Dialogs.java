@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Optional;
 
+import com.iniesta.zoofx.conf.ZFXConf;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -28,8 +30,9 @@ public class Dialogs {
 	public static void about(){
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("About ZooFx");
-		String version = "0.1.0";
-		String buildTime = "-";
+		ZFXConf conf = ZFXConf.getInstance();
+		String version = conf.getVersion();
+		String buildTime = conf.getBuildDate();
 		alert.setHeaderText(String.format("Version: %s - Build time: %s", version, buildTime));
 		alert.setContentText("Viewer and Editor of Zookeeper data");
 		alert.showAndWait();

@@ -141,4 +141,21 @@ public class ZFXConf {
 		}
 	}
 	
+	private Properties getBuildProperties(){
+		Properties props = new Properties();
+		try {
+			props.load(getClass().getClassLoader().getResourceAsStream("build.properties"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return props;
+	}
+	
+	public String getVersion(){
+		return getBuildProperties().getProperty("version","");
+	}
+	
+	public String getBuildDate(){
+		return getBuildProperties().getProperty("build.date","");
+	}
 }
