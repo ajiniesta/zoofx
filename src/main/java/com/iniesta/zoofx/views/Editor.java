@@ -124,6 +124,7 @@ public class Editor {
     }
 
 	private void setContent(final Service<? extends ZNodeFXContent> service) {
+		znode.setStat(service.getValue().getStat());
 		editor.setText(service.getValue().getContent());
 		statTable.setItems(FXCollections.observableArrayList(StatItem.extractStatItem(service.getValue().getStat())));
 	}

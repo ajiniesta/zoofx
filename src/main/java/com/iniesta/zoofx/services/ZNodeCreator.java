@@ -1,10 +1,9 @@
 package com.iniesta.zoofx.services;
 
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 
 import com.iniesta.zoofx.model.ZNodeFX;
+import com.iniesta.zoofx.zk.ZookeeperDao;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -15,31 +14,19 @@ public class ZNodeCreator extends Service<ZNodeFX> {
 	private ZNodeFX parent;
 	private String znodeName;
 
-
-
 	public ZNodeCreator(ZooKeeper zk, ZNodeFX parent, String znodeName) {
 		this.zk = zk;
 		this.parent = parent;
 		this.znodeName = znodeName;
 	}
-	
+
 	private final class TaskExtension extends Task<ZNodeFX> {
 		@Override
 		protected ZNodeFX call() throws Exception {
-			ZNodeFX newone = new ZNodeFX();
-			String path = ZNodeFX.addPath(parent.getName(), znodeName);
-			try{
-				zk.create(path , "".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-				newone.setName(path);
-			}catch(Exception e){
-				newone = null;
-				setException(e);
-			}
-			return newone;
+			ZookeeperDao zkDao = new ZookeeperDao();
+			return zkDao.createEmptyZnode(zk, parent, znodeName);
 		}
 	}
-
-	
 
 	@Override
 	protected Task<ZNodeFX> createTask() {

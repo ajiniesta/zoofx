@@ -1,10 +1,10 @@
 package com.iniesta.zoofx.services;
 
 import org.apache.zookeeper.ZooKeeper;
-import org.apache.zookeeper.data.Stat;
 
 import com.iniesta.zoofx.model.ZNodeFX;
 import com.iniesta.zoofx.model.ZNodeFXContent;
+import com.iniesta.zoofx.zk.ZookeeperDao;
 
 import javafx.concurrent.Task;
 
@@ -23,10 +23,8 @@ public class ZNodeSaver extends ThrowableService<ZNodeFXContent> {
 	private final class TaskExtension extends Task<ZNodeFXContent> {
 		@Override
 		protected ZNodeFXContent call() throws Exception {
-			Stat oldStat = znode.getStat();
-			int version = (oldStat!=null)?(oldStat.getVersion()+1):0;
-			Stat stat = zk.setData(znode.getName(), content.getBytes(), version);
-			return new ZNodeFXContent(content, stat);
+			ZookeeperDao zkDao = new ZookeeperDao();
+			return zkDao.saveZNode(zk, znode, content);
 		}
 	}
 
