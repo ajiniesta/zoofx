@@ -28,14 +28,17 @@ public class Viewer {
     private TabPane znodes;
 
 	private ZookeeperCluster zkc;
+
+	private ServiceWorker serviceWorker;
 	
-	public Viewer(ZookeeperCluster zkc){
+	public Viewer(ZookeeperCluster zkc, ServiceWorker serviceWorker){
 		this.zkc = zkc;
+		this.serviceWorker = serviceWorker;
 	}
 
     @FXML
     void initialize() throws IOException, InterruptedException {
-    	treeNodes.setCellFactory(param -> new ZNodeCellFactory(zkc.getZk(), znodes));    	
+    	treeNodes.setCellFactory(param -> new ZNodeCellFactory(zkc.getZk(), znodes, serviceWorker));    	
 		final ZNodeExplorer explorer = new ZNodeExplorer(zkc.getZk());
 		treeNodes.rootProperty().bind(explorer.valueProperty());
 		explorer.start();

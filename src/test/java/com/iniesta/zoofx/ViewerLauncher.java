@@ -26,7 +26,7 @@ public class ViewerLauncher extends Application {
 
 		ZooKeeper zk = ZookeeperConnection.getInstance().connect("localhost:2181", 5000);
 		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/Viewer.fxml"));
-		loader.setController(new Viewer(new ZookeeperCluster("localhost:2181", zk)));
+		loader.setController(new Viewer(new ZookeeperCluster("localhost:2181", zk), null));
 		Parent parent = loader.load();
 		Scene scene = new Scene(parent);
 		stage.setScene(scene);

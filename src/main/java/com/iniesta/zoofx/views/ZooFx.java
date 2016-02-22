@@ -78,7 +78,7 @@ public class ZooFx {
 		});
 		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/Viewer.fxml"));
 		try {
-			loader.setController(new Viewer(zkc));
+			loader.setController(new Viewer(zkc, new ServiceWorker(progress)));
 			Parent parent = loader.load();
 			tab.setContent(parent);
 		} catch (Exception e) {

@@ -24,13 +24,16 @@ public class ZNodeCellFactory extends TreeCell<ZNodeFX> {
 
 	private TextField textField;
 	private ContextMenu allMenu = new ContextMenu();
+	private ServiceWorker serviceWorker;
 
-	public ZNodeCellFactory(final ZooKeeper zk, final TabPane znodes) {
+	public ZNodeCellFactory(final ZooKeeper zk, final TabPane znodes, ServiceWorker serviceWorker) {
+		this.serviceWorker = serviceWorker;
 		MenuItem createMenuItem = new MenuItem("Create ZNode");
 		createMenuItem.setOnAction(event -> {
 			String znodeName = Dialogs.askAQuestion("Create a ZNode", "Enter a valid name for the znode", "Please, enter the name of the znode");
 			if(znodeName!=null){
 				final ZNodeCreator creator = new ZNodeCreator(zk, getTreeItem().getValue(), znodeName);
+				serviceWorker.bind(creator);
 				creator.stateProperty().addListener((ChangeListener<State>) (observable, oldValue, newValue) -> {
 					switch (newValue) {
 					case SUCCEEDED:
@@ -66,7 +69,7 @@ public class ZNodeCellFactory extends TreeCell<ZNodeFX> {
 				znodes.getTabs().add(tab);
 				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/Editor.fxml"));
 				try {
-					loader.setController(new Editor(zk, getTreeItem().getValue()));
+					loader.setController(new Editor(zk, getTreeItem().getValue(), serviceWorker));
 					Parent parent = loader.load();
 					tab.setContent(parent);
 				} catch (Exception e) {
@@ -93,6 +96,7 @@ public class ZNodeCellFactory extends TreeCell<ZNodeFX> {
 		TreeItem<ZNodeFX> parent = item.getParent();
 		if(parent!=null){
 			final ZKRemover remover = new ZKRemover(zk, item.getValue());
+			serviceWorker.bind(remover);
 			remover.stateProperty().addListener((ChangeListener<State>) (observable, oldValue, newValue) -> {
 				switch (newValue) {
 				case SUCCEEDED:
