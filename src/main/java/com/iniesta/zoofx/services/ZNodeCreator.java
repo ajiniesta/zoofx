@@ -30,7 +30,7 @@ public class ZNodeCreator extends Service<ZNodeFX> {
 			String path = ZNodeFX.addPath(parent.getName(), znodeName);
 			try{
 				zk.create(path , "".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-				newone.setName(znodeName);
+				newone.setName(path);
 			}catch(Exception e){
 				newone = null;
 				setException(e);

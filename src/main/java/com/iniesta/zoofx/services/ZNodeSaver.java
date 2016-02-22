@@ -23,13 +23,10 @@ public class ZNodeSaver extends ThrowableService<ZNodeFXContent> {
 	private final class TaskExtension extends Task<ZNodeFXContent> {
 		@Override
 		protected ZNodeFXContent call() throws Exception {
-//			try {
-				Stat stat = zk.setData(znode.getName(), content.getBytes(), znode.getStat().getVersion());
-				return new ZNodeFXContent(content, stat);
-//			} catch (Exception e) {
-//				setException(e);
-//				return null;
-//			}
+			Stat oldStat = znode.getStat();
+			int version = (oldStat!=null)?(oldStat.getVersion()+1):0;
+			Stat stat = zk.setData(znode.getName(), content.getBytes(), version);
+			return new ZNodeFXContent(content, stat);
 		}
 	}
 
