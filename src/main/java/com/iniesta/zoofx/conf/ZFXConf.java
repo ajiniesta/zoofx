@@ -5,8 +5,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+
+import org.apache.log4j.Appender;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import com.iniesta.zoofx.model.ZookeeperCluster;
 
@@ -14,38 +21,38 @@ import javafx.application.Platform;
 import javafx.util.Callback;
 
 public class ZFXConf {
-	
+
 	public final static String CONNECTION = "connection";
-	
+
 	public final static String TIMEOUT = "timeout";
 
 	private final static String LAST = "connections.lasts";
-	
+
 	private final static int MAX_LASTS = 4;
-	
+
 	private static ZFXConf instance;
 
 	private List<Callback<List<String>, Void>> listeners;
-	
-	private ZFXConf(){
+
+	private ZFXConf() {
 		getConf();
 		listeners = new ArrayList<>();
 	}
-	
-	public static synchronized ZFXConf getInstance(){
-		if(instance==null){
+
+	public static synchronized ZFXConf getInstance() {
+		if (instance == null) {
 			instance = new ZFXConf();
 		}
 		return instance;
 	}
-	
-	public List<String> getLastConnections(){
+
+	public List<String> getLastConnections() {
 		Properties conf = getConf();
 		String lasts = conf.getProperty(LAST);
 		return extractConnections(lasts);
 	}
 
-	public void addSuccessfulConnection(ZookeeperCluster zk){
+	public void addSuccessfulConnection(ZookeeperCluster zk) {
 		Properties conf = getConf();
 		String lasts = conf.getProperty(LAST);
 		String newLasts = addSuccess(lasts, zk.getConnString());
@@ -53,17 +60,17 @@ public class ZFXConf {
 		savePropsIntoConfFile(getConfFile(), conf, "Updating last successful");
 		notifyToListeners();
 	}
-	
+
 	protected String addSuccess(String lasts, String lastConn) {
 		List<String> current = extractConnections(lasts);
-		if(current.size()<MAX_LASTS){
-			if(!current.contains(lastConn)){
-				current.add(lastConn);				
-			}			
-		}else{
-			if(current.contains(lastConn)){
-				current.remove(lastConn);				
-			}else{
+		if (current.size() < MAX_LASTS) {
+			if (!current.contains(lastConn)) {
+				current.add(lastConn);
+			}
+		} else {
+			if (current.contains(lastConn)) {
+				current.remove(lastConn);
+			} else {
 				current.remove(0);
 			}
 			current.add(lastConn);
@@ -71,21 +78,21 @@ public class ZFXConf {
 		return flatConns(current);
 	}
 
-	private String flatConns(List<String> conns){
+	private String flatConns(List<String> conns) {
 		String flat = "";
-		for (int i= 0; i < conns.size(); i++) {
+		for (int i = 0; i < conns.size(); i++) {
 			String v = conns.get(i);
-			flat += v + ((i<conns.size()-1)?"|":"");
+			flat += v + ((i < conns.size() - 1) ? "|" : "");
 		}
 		return flat;
 	}
-	
+
 	protected List<String> extractConnections(String lasts) {
 		List<String> conns = new ArrayList<>();
-		if(lasts!=null){
+		if (lasts != null) {
 			String connections[] = lasts.split("\\|");
 			for (String c : connections) {
-				if(c!=null && !c.isEmpty()){
+				if (c != null && !c.isEmpty()) {
 					conns.add(c);
 				}
 			}
@@ -96,7 +103,7 @@ public class ZFXConf {
 	private Properties getConf() {
 		String confFile = getConfFile();
 		Properties conf = new Properties();
-		try {			
+		try {
 			conf.load(new FileInputStream(new File(confFile)));
 		} catch (IOException e) {
 			savePropsIntoConfFile(confFile, conf, "Initial generated file");
@@ -113,24 +120,29 @@ public class ZFXConf {
 	}
 
 	private String getConfFile() {
+		String confHome = getConfHome();
+		String confFile = confHome + System.getProperty("file.separator") + "zoofx.properties";
+		return confFile;
+	}
+
+	private static String getConfHome() {
 		String userHome = System.getProperty("user.home");
 		String confHome = userHome + System.getProperty("file.separator") + ".zoofx";
 		File confDir = new File(confHome);
-		if(!confDir.exists()){
+		if (!confDir.exists()) {
 			confDir.mkdirs();
 		}
-		String confFile = confHome + System.getProperty("file.separator") + "zoofx.properties";
-		return confFile;
+		return confHome;
 	}
 
 	public void addListener(Callback<List<String>, Void> callback) {
 		listeners.add(callback);
 	}
-	
-	private void notifyToListeners(){
-		if(Platform.isFxApplicationThread()){
+
+	private void notifyToListeners() {
+		if (Platform.isFxApplicationThread()) {
 			innerNotifyToListeners();
-		}else{
+		} else {
 			Platform.runLater(() -> innerNotifyToListeners());
 		}
 	}
@@ -140,8 +152,8 @@ public class ZFXConf {
 			callback.call(getLastConnections());
 		}
 	}
-	
-	private Properties getBuildProperties(){
+
+	private Properties getBuildProperties() {
 		Properties props = new Properties();
 		try {
 			props.load(getClass().getClassLoader().getResourceAsStream("build.properties"));
@@ -150,12 +162,33 @@ public class ZFXConf {
 		}
 		return props;
 	}
-	
-	public String getVersion(){
-		return getBuildProperties().getProperty("version","");
+
+	public String getVersion() {
+		return getBuildProperties().getProperty("version", "");
 	}
-	
-	public String getBuildDate(){
-		return getBuildProperties().getProperty("build.date","");
+
+	public String getBuildDate() {
+		return getBuildProperties().getProperty("build.date", "");
+	}
+
+	public static void addAppender() {
+		FileAppender fa = new FileAppender();
+		fa.setName("FileLogger");
+		String logFile = getConfHome() + System.getProperty("file.separator") + "zoofx.log";
+		fa.setFile(logFile);
+		
+		Enumeration<Appender> allAppenders = Logger.getRootLogger().getAllAppenders();
+		if(allAppenders.hasMoreElements()){
+			Appender appender = allAppenders.nextElement();
+			if(appender instanceof ConsoleAppender){
+				ConsoleAppender ca = (ConsoleAppender)appender;
+				fa.setLayout(ca.getLayout());
+				fa.setThreshold(ca.getThreshold());
+			}
+			fa.setAppend(true);
+		}
+		fa.activateOptions();
+		
+		Logger.getRootLogger().addAppender(fa);
 	}
 }

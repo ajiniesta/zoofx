@@ -11,8 +11,11 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class ZooFX extends Application {
-	
+
+//	private final static Logger logger = Logger.getLogger(ZooFX.class);
+
 	public static void main(String[] args) {
+		ZFXConf.addAppender();
 		ZFXConf.getInstance();
 		launch(args);
 	}
