@@ -1,80 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox fx:id="parent" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <ToolBar prefHeight="40.0" prefWidth="200.0">
-         <items>
-            <Button mnemonicParsing="false" onAction="#onSaveAction">
-               <graphic>
-                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/save.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <Button fx:id="addKeyButton" mnemonicParsing="false" onAction="#onAddKey">
-               <graphic>
-                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/math-add-icon.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <Button fx:id="removeSelKeyButton" mnemonicParsing="false" onAction="#onRemoveKey">
-               <graphic>
-                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/math-minus-icon.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-         </items>
-      </ToolBar>
-      <TabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-         <tabs>
-            <Tab fx:id="textTab" text="Editor">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TextArea fx:id="editor" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                     </children>
-                  </AnchorPane>
-               </content>
-            </Tab>
-            <Tab fx:id="tableTab" text="Table View">
-               <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="tableEditor" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <columns>
-                              <TableColumn fx:id="keyCol" prefWidth="75.0" text="Key" />
-                              <TableColumn fx:id="valCol" prefWidth="75.0" text="Value" />
-                           </columns>
-                        </TableView>
-                     </children>
-                  </AnchorPane>
-               </content>
-            </Tab>
-            <Tab text="Stats">
-              <content>
-                <AnchorPane>
-                     <children>
-                        <TableView fx:id="statTable" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <columns>
-                            <TableColumn fx:id="statKeyColumn" prefWidth="96.0" text="Stat" />
-                            <TableColumn fx:id="statValueColumn" maxWidth="1.7976931348623157E308" prefWidth="103.0" text="Value" />
-                          </columns>
-                        </TableView>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </Tab>
-         </tabs>
-      </TabPane>
-   </children>
+<VBox fx:id="parent" xmlns:fx="http://javafx.com/fxml">
+  <children>
+    <ToolBar prefHeight="40.0" prefWidth="200.0">
+      <items>
+        <Button mnemonicParsing="false" onAction="#onSaveAction">
+          <graphic>
+            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@images/save.png" />
+              </image>
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="addKeyButton" mnemonicParsing="false" onAction="#onAddKey">
+          <graphic>
+            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@images/math-add-icon.png" />
+              </image>
+            </ImageView>
+          </graphic>
+        </Button>
+        <Button fx:id="removeSelKeyButton" mnemonicParsing="false" onAction="#onRemoveKey">
+          <graphic>
+            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@images/math-minus-icon.png" />
+              </image>
+            </ImageView>
+          </graphic>
+        </Button>
+        <TextField fx:id="filterField" onKeyTyped="#onFilterTyped" prefWidth="200.0" promptText="Filter" />
+      </items>
+    </ToolBar>
+    <TabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+      <tabs>
+        <Tab fx:id="textTab" text="Editor">
+          <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <TextArea fx:id="editor" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab fx:id="tableTab" onSelectionChanged="#onTabChanged" text="Table View">
+          <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <children>
+                <TableView fx:id="tableEditor" editable="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <columns>
+                    <TableColumn prefWidth="75.0" text="Key" fx:id="keyCol" />
+                    <TableColumn prefWidth="75.0" text="Value" fx:id="valCol" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+        <Tab text="Stats">
+          <content>
+            <AnchorPane>
+              <children>
+                <TableView fx:id="statTable" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <columns>
+                    <TableColumn prefWidth="96.0" text="Stat" fx:id="statKeyColumn" />
+                    <TableColumn maxWidth="1.7976931348623157E308" prefWidth="103.0" text="Value" fx:id="statValueColumn" />
+                  </columns>
+                </TableView>
+              </children>
+            </AnchorPane>
+          </content>
+        </Tab>
+      </tabs>
+    </TabPane>
+  </children>
 </VBox>
